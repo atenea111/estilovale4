@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, Minus, Plus, ShoppingBag, Trash2, User } from "lucide-react"
+import { ChevronLeft, Instagram, Minus, Plus, ShoppingBag, Trash2, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { initializeFirebase } from "@/lib/firebase"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 
 interface CartItem {
   id: string
@@ -56,26 +58,53 @@ export default function Carrito() {
     return cartItems.reduce((total, item) => total + item.precio * item.quantity, 0)
   }
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       alert("El carrito está vacío")
       return
     }
 
-    // Format the order message for WhatsApp
-    let message = "Hola! Quiero realizar el siguiente pedido:\n\n"
+    try {
+      // Register the sale in Firebase
+      const { db } = await initializeFirebase()
 
-    cartItems.forEach((item) => {
-      message += `• ${item.quantity}x ${item.nombre} - $${(item.precio * item.quantity).toLocaleString("es-AR")}\n`
-    })
+      const saleData = {
+        fecha: serverTimestamp(),
+        cliente: "Cliente WhatsApp",
+        total: getTotalPrice(),
+        productos: cartItems.map((item) => ({
+          id: item.id,
+          nombre: item.nombre,
+          precio: item.precio,
+          cantidad: item.quantity,
+          subtotal: item.precio * item.quantity,
+        })),
+        estado: "Pendiente",
+      }
 
-    message += `\nTotal: $${getTotalPrice().toLocaleString("es-AR")}`
+      await addDoc(collection(db, "ventas"), saleData)
 
-    // Encode the message for WhatsApp URL
-    const encodedMessage = encodeURIComponent(message)
+      // Format the order message for WhatsApp
+      let message = "Hola! Quiero realizar el siguiente pedido:\n\n"
 
-    // Open WhatsApp with the pre-filled message
-    window.open(`https://wa.me/3412714029?text=${encodedMessage}`, "_blank")
+      cartItems.forEach((item) => {
+        message += `• ${item.quantity}x ${item.nombre} - $${(item.precio * item.quantity).toLocaleString("es-AR")}\n`
+      })
+
+      message += `\nTotal: $${getTotalPrice().toLocaleString("es-AR")}`
+
+      // Encode the message for WhatsApp URL
+      const encodedMessage = encodeURIComponent(message)
+
+      // Clear the cart
+      clearCart()
+
+      // Open WhatsApp with the pre-filled message - Updated phone number
+      window.open(`https://wa.me/5493415496064?text=${encodedMessage}`, "_blank")
+    } catch (error) {
+      console.error("Error registering sale:", error)
+      alert("Hubo un error al procesar tu pedido. Por favor intenta nuevamente.")
+    }
   }
 
   if (loading) {
@@ -93,9 +122,9 @@ export default function Carrito() {
     <div className="min-h-screen bg-[#F5D3EF]">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-[#F5D3EF] shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-black">
-            Estilo Vale 4
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <img src="/images/logo.png" alt="Estilo Vale 4" className="h-12 md:h-16" />
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-black hover:text-gray-700 font-medium">
@@ -109,6 +138,14 @@ export default function Carrito() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
+            <Link
+              href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black hover:text-gray-700"
+            >
+              <Instagram className="h-6 w-6" />
+            </Link>
             <Link href="/carrito" className="relative">
               <ShoppingBag className="h-6 w-6 text-black" />
               <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -270,8 +307,8 @@ export default function Carrito() {
       <footer className="bg-black text-white py-10 mt-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Estilo Vale 4</h3>
+            <div className="flex flex-col items-center md:items-start">
+              <img src="/images/logo.png" alt="Estilo Vale 4" className="h-20 mb-4" />
               <p className="text-gray-300">Tu tienda de moda favorita con los mejores productos y precios.</p>
             </div>
             <div>
@@ -296,8 +333,18 @@ export default function Carrito() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">Contacto</h3>
-              <p className="text-gray-300">WhatsApp: 3412714029</p>
+              <p className="text-gray-300">WhatsApp: +54 9 3415 49-6064</p>
               <p className="text-gray-300 mt-2">Email: info@estilovale4.com</p>
+              <div className="flex mt-4">
+                <Link
+                  href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-[#F5D3EF] transition-colors"
+                >
+                  <Instagram className="h-6 w-6" />
+                </Link>
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Filter, ShoppingBag, User } from "lucide-react"
+import { Filter, Instagram, ShoppingBag, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -26,6 +26,7 @@ interface Product {
 interface Category {
   id: string
   nombre: string
+  imagen: string
 }
 
 export default function Catalogo() {
@@ -109,9 +110,9 @@ export default function Catalogo() {
     <div className="min-h-screen bg-[#F5D3EF]">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-[#F5D3EF] shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-black">
-            Estilo Vale 4
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <img src="/images/logo.png" alt="Estilo Vale 4" className="h-12 md:h-16" />
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-black hover:text-gray-700 font-medium">
@@ -125,6 +126,14 @@ export default function Catalogo() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
+            <Link
+              href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black hover:text-gray-700"
+            >
+              <Instagram className="h-6 w-6" />
+            </Link>
             <Link href="/carrito" className="relative">
               <ShoppingBag className="h-6 w-6 text-black" />
               <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -175,7 +184,18 @@ export default function Catalogo() {
                           checked={selectedCategories.includes(category.id)}
                           onCheckedChange={() => handleCategoryChange(category.id)}
                         />
-                        <Label htmlFor={`mobile-category-${category.id}`}>{category.nombre}</Label>
+                        <Label htmlFor={`mobile-category-${category.id}`} className="flex items-center gap-2">
+                          {category.imagen && (
+                            <div className="h-6 w-6 rounded overflow-hidden">
+                              <img
+                                src={category.imagen || "/placeholder.svg"}
+                                alt={category.nombre}
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                          )}
+                          {category.nombre}
+                        </Label>
                       </div>
                     ))}
                   </div>
@@ -208,7 +228,18 @@ export default function Catalogo() {
                       checked={selectedCategories.includes(category.id)}
                       onCheckedChange={() => handleCategoryChange(category.id)}
                     />
-                    <Label htmlFor={`category-${category.id}`}>{category.nombre}</Label>
+                    <Label htmlFor={`category-${category.id}`} className="flex items-center gap-2">
+                      {category.imagen && (
+                        <div className="h-6 w-6 rounded overflow-hidden">
+                          <img
+                            src={category.imagen || "/placeholder.svg"}
+                            alt={category.nombre}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                      {category.nombre}
+                    </Label>
                   </div>
                 ))}
               </div>
@@ -237,8 +268,8 @@ export default function Catalogo() {
       <footer className="bg-black text-white py-10 mt-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Estilo Vale 4</h3>
+            <div className="flex flex-col items-center md:items-start">
+              <img src="/images/logo.png" alt="Estilo Vale 4" className="h-20 mb-4" />
               <p className="text-gray-300">Tu tienda de moda favorita con los mejores productos y precios.</p>
             </div>
             <div>
@@ -263,8 +294,18 @@ export default function Catalogo() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">Contacto</h3>
-              <p className="text-gray-300">WhatsApp: 3412714029</p>
+              <p className="text-gray-300">WhatsApp: +54 9 3415 49-6064</p>
               <p className="text-gray-300 mt-2">Email: info@estilovale4.com</p>
+              <div className="flex mt-4">
+                <Link
+                  href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-[#F5D3EF] transition-colors"
+                >
+                  <Instagram className="h-6 w-6" />
+                </Link>
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">

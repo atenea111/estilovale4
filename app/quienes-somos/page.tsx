@@ -1,14 +1,25 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ShoppingBag, User } from "lucide-react"
+import { Instagram, ShoppingBag, User } from "lucide-react"
 
 export default function QuienesSomos() {
+  const [cartCount, setCartCount] = useState(0)
+
+  useEffect(() => {
+    // Get cart count from localStorage
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+    setCartCount(cart.length)
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#F5D3EF]">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-[#F5D3EF] shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-black">
-            Estilo Vale 4
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <img src="/images/logo.png" alt="Estilo Vale 4" className="h-12 md:h-16" />
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/" className="text-black hover:text-gray-700 font-medium">
@@ -22,10 +33,18 @@ export default function QuienesSomos() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
+            <Link
+              href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black hover:text-gray-700"
+            >
+              <Instagram className="h-6 w-6" />
+            </Link>
             <Link href="/carrito" className="relative">
               <ShoppingBag className="h-6 w-6 text-black" />
               <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
+                {cartCount}
               </span>
             </Link>
             <Link href="/admin-login" className="text-black hover:text-gray-700">
@@ -43,75 +62,38 @@ export default function QuienesSomos() {
           <div className="bg-white rounded-lg shadow-md p-8 mb-12">
             <div className="flex flex-col md:flex-row items-center mb-12">
               <div className="md:w-1/2 mb-6 md:mb-0 md:pr-8">
-                <img
-                  src="/placeholder.svg?height=400&width=400"
-                  alt="Estilo Vale 4"
-                  className="rounded-lg w-full h-auto"
-                />
+                <img src="/images/logo.png" alt="Estilo Vale 4" className="rounded-lg w-full h-auto max-w-xs mx-auto" />
               </div>
               <div className="md:w-1/2">
-                <h2 className="text-2xl font-bold text-black mb-4">Nuestra Historia</h2>
-                <p className="text-gray-700 mb-4">
-                  Estilo Vale 4 nació de la pasión por la moda y el deseo de ofrecer productos de calidad a precios
-                  accesibles. Desde nuestros inicios, nos hemos comprometido a brindar una experiencia de compra única y
-                  personalizada.
-                </p>
-                <p className="text-gray-700">
-                  Fundada en 2020, nuestra tienda ha crecido gracias al apoyo de nuestros clientes y a nuestro
-                  compromiso con la excelencia en cada detalle.
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold text-black mb-4">Nuestra Misión</h2>
-              <p className="text-gray-700">
-                En Estilo Vale 4, nuestra misión es ofrecer productos de moda que permitan a nuestros clientes expresar
-                su personalidad y sentirse seguros con su estilo. Nos esforzamos por seleccionar cuidadosamente cada
-                artículo, asegurando la mejor calidad y las últimas tendencias.
-              </p>
-            </div>
-
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold text-black mb-4">Nuestros Valores</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[#F5D3EF] p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-black mb-2">Calidad</h3>
-                  <p className="text-gray-700">
-                    Seleccionamos cuidadosamente cada producto para garantizar la mejor calidad.
+                <div className="prose max-w-none">
+                  <p className="text-gray-700 mb-4">Hola soy valeria y soy creadora de ESTILOVALE4.</p>
+                  <p className="text-gray-700 mb-4">
+                    Hace 2 años decidí crear un espacio de ventas de carteras, bolsos y mucho más.
                   </p>
-                </div>
-                <div className="bg-[#F5D3EF] p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-black mb-2">Atención</h3>
-                  <p className="text-gray-700">
-                    Brindamos un servicio personalizado y atento a las necesidades de cada cliente.
+                  <p className="text-gray-700 mb-4">
+                    Amo las carteras, la convinacion y amo lo q hago. Brindo diseños únicos y de excelente calidad para
+                    lucirte día a día.
                   </p>
-                </div>
-                <div className="bg-[#F5D3EF] p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold text-black mb-2">Innovación</h3>
-                  <p className="text-gray-700">
-                    Nos mantenemos actualizados con las últimas tendencias y novedades del mercado.
+                  <p className="text-gray-700 mb-4">
+                    Mi objetivo es seguir creciendo e innovando constantemente y adaptándome a un publico cada vez más
+                    exigente que encuentre esta tienda online, el asesoramiento y variedad en producto.
                   </p>
+                  <p className="text-gray-700 font-semibold">Gracias por confiar y ser parte de estilovale4</p>
                 </div>
               </div>
             </div>
 
-            <div>
-              <h2 className="text-2xl font-bold text-black mb-4">Contacto</h2>
-              <p className="text-gray-700 mb-4">
-                Estamos siempre disponibles para atender tus consultas y ayudarte a encontrar lo que buscas.
-              </p>
-              <div className="bg-[#F5D3EF] p-6 rounded-lg">
-                <p className="text-black mb-2">
-                  <strong>WhatsApp:</strong> 3412714029
-                </p>
-                <p className="text-black mb-2">
-                  <strong>Email:</strong> info@estilovale4.com
-                </p>
-                <p className="text-black">
-                  <strong>Horario de atención:</strong> Lunes a Viernes de 9:00 a 18:00 hs
-                </p>
-              </div>
+            <div className="text-center mt-8">
+              <h3 className="text-xl font-semibold text-black mb-4">Síguenos en Instagram</h3>
+              <Link
+                href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
+              >
+                <Instagram className="h-5 w-5" />
+                @estilovale4
+              </Link>
             </div>
           </div>
         </div>
@@ -121,8 +103,8 @@ export default function QuienesSomos() {
       <footer className="bg-black text-white py-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Estilo Vale 4</h3>
+            <div className="flex flex-col items-center md:items-start">
+              <img src="/images/logo.png" alt="Estilo Vale 4" className="h-20 mb-4" />
               <p className="text-gray-300">Tu tienda de moda favorita con los mejores productos y precios.</p>
             </div>
             <div>
@@ -147,8 +129,18 @@ export default function QuienesSomos() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">Contacto</h3>
-              <p className="text-gray-300">WhatsApp: 3412714029</p>
+              <p className="text-gray-300">WhatsApp: +54 9 3415 49-6064</p>
               <p className="text-gray-300 mt-2">Email: info@estilovale4.com</p>
+              <div className="flex mt-4">
+                <Link
+                  href="https://www.instagram.com/estilovale4/?igsh=eWF5eW5rMTBtZXd1#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-[#F5D3EF] transition-colors"
+                >
+                  <Instagram className="h-6 w-6" />
+                </Link>
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
